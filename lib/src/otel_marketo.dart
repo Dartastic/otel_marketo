@@ -1,15 +1,16 @@
-// Licensed under the Dartastic Pro Software License Agreement.
+// Licensed under the Apache License, Version 2.0
 // Copyright 2025-2026 Mindful Software LLC d/b/a Dartastic.io, All rights reserved.
 
-import 'package:dartastic_opentelemetry/dartastic_opentelemetry.dart';
+import 'package:dartastic_opentelemetry_api/dartastic_opentelemetry_api.dart';
 
 import 'otel_marketo_suppression.dart';
 
 const _tracerName = 'dartastic_otel_libs_marketo';
 
-Tracer _tracer() => OTel.tracerProvider().getTracer(_tracerName);
+APITracer _tracer() => OTelAPI.tracerProvider().getTracer(_tracerName);
 
 class MarketoResult {
+  /// Creates a result.
   const MarketoResult({
     this.munchkinId,
     this.entityKind,
@@ -93,8 +94,13 @@ class MarketoResult {
   final int? statusCode;
 }
 
+/// What a traced call returned: the value for the caller plus fields
+/// recorded on the span.
 class MarketoCallResult<T> {
+  /// Creates a call result.
   const MarketoCallResult({required this.value, this.result});
+
+  /// The value returned to the caller.
   final T value;
   final MarketoResult? result;
 }
@@ -131,7 +137,7 @@ Future<T> tracedMarketo<T>({
   final span = _tracer().startSpan(
     'marketo $operation',
     kind: SpanKind.client,
-    attributes: OTel.attributesFromMap(m),
+    attributes: OTelAPI.attributesFromMap(m),
   );
   try {
     final r = await invoke();
@@ -139,94 +145,94 @@ Future<T> tracedMarketo<T>({
       final res = r.result!;
       final extras = <Attribute<Object>>[];
       if (res.munchkinId != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'marketo.munchkin_id',
           res.munchkinId!,
         ));
       }
       if (res.entityKind != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'marketo.entity.kind',
           res.entityKind!,
         ));
       }
       if (res.entityId != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'marketo.entity.id',
           res.entityId!,
         ));
       }
       if (res.action != null) {
-        extras.add(OTel.attributeString('marketo.action', res.action!));
+        extras.add(OTelAPI.attributeString('marketo.action', res.action!));
       }
       if (res.programId != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'marketo.program.id',
           res.programId!,
         ));
       }
       if (res.programName != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'marketo.program.name',
           res.programName!,
         ));
       }
       if (res.campaignId != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'marketo.campaign.id',
           res.campaignId!,
         ));
       }
       if (res.smartCampaignStatus != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'marketo.smart_campaign.status',
           res.smartCampaignStatus!,
         ));
       }
       if (res.smartListId != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'marketo.smart_list.id',
           res.smartListId!,
         ));
       }
       if (res.staticListId != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'marketo.static_list.id',
           res.staticListId!,
         ));
       }
       if (res.leadCount != null) {
-        extras.add(OTel.attributeInt('marketo.lead.count', res.leadCount!));
+        extras.add(OTelAPI.attributeInt('marketo.lead.count', res.leadCount!));
       }
       if (res.activityType != null) {
-        extras.add(OTel.attributeInt(
+        extras.add(OTelAPI.attributeInt(
           'marketo.activity.type',
           res.activityType!,
         ));
       }
       if (res.emailId != null) {
-        extras.add(OTel.attributeString('marketo.email.id', res.emailId!));
+        extras.add(OTelAPI.attributeString('marketo.email.id', res.emailId!));
       }
       if (res.emailDeliveredCount != null) {
-        extras.add(OTel.attributeInt(
+        extras.add(OTelAPI.attributeInt(
           'marketo.email.delivered_count',
           res.emailDeliveredCount!,
         ));
       }
       if (res.emailBouncedCount != null) {
-        extras.add(OTel.attributeInt(
+        extras.add(OTelAPI.attributeInt(
           'marketo.email.bounced_count',
           res.emailBouncedCount!,
         ));
       }
       if (res.bulkJobId != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'marketo.bulk.job_id',
           res.bulkJobId!,
         ));
       }
       if (res.bulkJobStatus != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'marketo.bulk.job_status',
           res.bulkJobStatus!,
         ));
@@ -235,38 +241,38 @@ Future<T> tracedMarketo<T>({
         }
       }
       if (res.exportRows != null) {
-        extras.add(OTel.attributeInt(
+        extras.add(OTelAPI.attributeInt(
           'marketo.bulk.export_rows',
           res.exportRows!,
         ));
       }
       if (res.dailyApiCallsUsed != null) {
-        extras.add(OTel.attributeInt(
+        extras.add(OTelAPI.attributeInt(
           'marketo.quota.daily_used',
           res.dailyApiCallsUsed!,
         ));
       }
       if (res.dailyApiCallsLimit != null) {
-        extras.add(OTel.attributeInt(
+        extras.add(OTelAPI.attributeInt(
           'marketo.quota.daily_limit',
           res.dailyApiCallsLimit!,
         ));
       }
       if (res.errorCode != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'marketo.error.code',
           res.errorCode!,
         ));
         span.setStatus(SpanStatusCode.Error, 'Marketo ${res.errorCode}');
       }
       if (res.errorMessage != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'marketo.error.message',
           res.errorMessage!,
         ));
       }
       if (res.statusCode != null) {
-        extras.add(OTel.attributeInt(
+        extras.add(OTelAPI.attributeInt(
           'http.response.status_code',
           res.statusCode!,
         ));
@@ -277,13 +283,13 @@ Future<T> tracedMarketo<T>({
           );
         }
       }
-      if (extras.isNotEmpty) span.addAttributes(OTel.attributes(extras));
+      if (extras.isNotEmpty) span.addAttributes(OTelAPI.attributes(extras));
     }
     return r.value;
   } catch (e, st) {
-    span.addAttributes(OTel.attributes([
-      OTel.attributeString(
-        ErrorResource.errorType.key,
+    span.addAttributes(OTelAPI.attributes([
+      OTelAPI.attributeString(
+        ErrorAttributes.errorType.key,
         e.runtimeType.toString(),
       ),
     ]));
